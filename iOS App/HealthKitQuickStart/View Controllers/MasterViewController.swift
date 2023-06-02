@@ -5,36 +5,42 @@ class MasterViewController: UITabBarController {
   //static let healthStore = HKHealthStore()
   var json:[String : Any] = [:]
   //https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier
-  static var targets:[HKQuantityTypeIdentifier] =
-  [HKQuantityTypeIdentifier.bodyMassIndex,
-   HKQuantityTypeIdentifier.bodyMass,
-   HKQuantityTypeIdentifier.activeEnergyBurned,
-   HKQuantityTypeIdentifier.stepCount,
-   HKQuantityTypeIdentifier.flightsClimbed,
-   HKQuantityTypeIdentifier.distanceWalkingRunning,
-   HKQuantityTypeIdentifier.dietaryWater,
-   HKQuantityTypeIdentifier.dietaryCarbohydrates,
-   HKQuantityTypeIdentifier.dietaryProtein,
-   HKQuantityTypeIdentifier.dietaryFatTotal,
-   HKQuantityTypeIdentifier.dietaryFatSaturated,
-   HKQuantityTypeIdentifier.dietaryFatMonounsaturated,
-   HKQuantityTypeIdentifier.dietaryFatPolyunsaturated,
-   HKQuantityTypeIdentifier.dietaryCholesterol,
-   HKQuantityTypeIdentifier.dietaryEnergyConsumed,
-   HKQuantityTypeIdentifier.dietarySodium,
-   HKQuantityTypeIdentifier.dietarySugar,
-   HKQuantityTypeIdentifier.basalEnergyBurned,
-   HKQuantityTypeIdentifier.waistCircumference,
-   HKQuantityTypeIdentifier.heartRate,
-   HKQuantityTypeIdentifier.heartRateVariabilitySDNN,
-   HKQuantityTypeIdentifier.restingHeartRate,
-   HKQuantityTypeIdentifier.walkingHeartRateAverage,
-   HKQuantityTypeIdentifier.environmentalAudioExposure,
-   HKQuantityTypeIdentifier.headphoneAudioExposure,
-   HKQuantityTypeIdentifier.appleStandTime,
-   HKQuantityTypeIdentifier.appleExerciseTime
+  static var targets:[String] =
+  [HKQuantityTypeIdentifier.bodyMassIndex.rawValue,
+   HKQuantityTypeIdentifier.bodyMass.rawValue,
+   HKQuantityTypeIdentifier.activeEnergyBurned.rawValue,
+   HKQuantityTypeIdentifier.stepCount.rawValue,
+   HKQuantityTypeIdentifier.flightsClimbed.rawValue,
+   HKQuantityTypeIdentifier.distanceWalkingRunning.rawValue,
+   HKQuantityTypeIdentifier.dietaryWater.rawValue,
+   HKQuantityTypeIdentifier.dietaryCarbohydrates.rawValue,
+   HKQuantityTypeIdentifier.dietaryProtein.rawValue,
+   HKQuantityTypeIdentifier.dietaryFatTotal.rawValue,
+   HKQuantityTypeIdentifier.dietaryFatSaturated.rawValue,
+   HKQuantityTypeIdentifier.dietaryFatMonounsaturated.rawValue,
+   HKQuantityTypeIdentifier.dietaryFatPolyunsaturated.rawValue,
+   HKQuantityTypeIdentifier.dietaryCholesterol.rawValue,
+   HKQuantityTypeIdentifier.dietaryEnergyConsumed.rawValue,
+   HKQuantityTypeIdentifier.dietarySodium.rawValue,
+   HKQuantityTypeIdentifier.dietarySugar.rawValue,
+   HKQuantityTypeIdentifier.basalEnergyBurned.rawValue,
+   HKQuantityTypeIdentifier.waistCircumference.rawValue,
+   HKQuantityTypeIdentifier.heartRate.rawValue,
+   HKQuantityTypeIdentifier.heartRateVariabilitySDNN.rawValue,
+   HKQuantityTypeIdentifier.restingHeartRate.rawValue,
+   HKQuantityTypeIdentifier.walkingHeartRateAverage.rawValue,
+   HKQuantityTypeIdentifier.environmentalAudioExposure.rawValue,
+   HKQuantityTypeIdentifier.headphoneAudioExposure.rawValue,
+   HKQuantityTypeIdentifier.appleStandTime.rawValue,
+   HKQuantityTypeIdentifier.appleExerciseTime.rawValue,
+   HKCategoryType(.sleepAnalysis).identifier
   ]
 
+  
+//  static var sleep_targets:[HKCategoryTypeIdentifier] = [
+//    HKCategoryTypeIdentifier.sleepAnalysis
+//  ]
+  
 
   override func viewDidLoad() {
     super.viewDidLoad()

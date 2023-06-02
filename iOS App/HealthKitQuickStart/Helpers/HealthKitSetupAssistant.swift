@@ -56,6 +56,9 @@ class HealthKitSetupAssistant {
             let appleExerciseTime = HKObjectType.quantityType(forIdentifier: .appleExerciseTime),
             let sleep = HKObjectType.categoryType(forIdentifier: HKCategoryTypeIdentifier.sleepAnalysis),
             let o2sat = HKObjectType.quantityType(forIdentifier: .oxygenSaturation)
+              
+              
+
 
       
               

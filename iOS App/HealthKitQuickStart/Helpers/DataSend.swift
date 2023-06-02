@@ -8,10 +8,12 @@ class DataSend{
   static let healthStore = HKHealthStore()
   var json:[String : Any] = [:]
   var targets = MasterViewController.targets
-
+  var sleep:[String] = []
+  
   
   /******  Runs Query for specificed identifier given   ******/
   public func runquery(count:Int, date:String, identity:String){
+    
     //RECURSIVE FUNCTION --> handles data
     if(count == targets.count){ // exit recursive functon
       do {
@@ -25,19 +27,13 @@ class DataSend{
 
         let jsonData = try JSONSerialization.data(withJSONObject: json, options: [])
         let jsonString = String(data: jsonData, encoding: String.Encoding.ascii)!
-        let body:String = jsonString.replacingOccurrences(of: "HKQuantityTypeIdentifier", with: "")
-          //                         .replacingOccurrences(of: "'", with: "") // ERRORS OUT WHEN DATA IS UPLOADED W/ THIS
-          //                         .replacingOccurrences(of: "\\", with: "")
-          //                         .replacingOccurrences(of: "\n", with: "")
-          //                         .replacingOccurrences(of: ";", with: "")
-          //                         .replacingOccurrences(of: "=", with: ":")
-          //                         .replacingOccurrences(of: "", with: "")
+        var body:String = jsonString.replacingOccurrences(of: "HKQuantityTypeIdentifier", with: "").replacingOccurrences(of: "HKCategoryTypeIdentifier", with: "")
+
+        //print(body); PRINT JSON VALUE TO SEND THRU THE WIRE
         
         
-        print(body);
         // THIS WILL SEND DATE THRU POST
         self.sendPost(body: body) //send data to snowpipe
-//        self.sendHybrid(body:body) //send data to hybrid table
       }catch {
           print(error.localizedDescription)
       }
@@ -46,9 +42,13 @@ class DataSend{
   
 
     let identifier = targets[count]
-    guard let id = HKSampleType.quantityType(forIdentifier: identifier) else {
-       return
-     }
+    var id = NSObject()
+
+    if identifier.contains("Category"){
+      id = HKSampleType.categoryType(forIdentifier: HKCategoryTypeIdentifier(rawValue: identifier))!
+    }else{
+      id = HKSampleType.quantityType(forIdentifier: HKQuantityTypeIdentifier(rawValue: identifier))!
+    }
     
      let formatter = DateFormatter()
      formatter.dateFormat = "yyyy/MM/dd"
@@ -57,13 +57,28 @@ class DataSend{
      let daysAgo = NSCalendar.current.date(byAdding: .day, value: -1, to: endTime)
      let pred = HKQuery.predicateForSamples(withStart: daysAgo, end: endTime, options: [])
     
-     let query = HKSampleQuery(sampleType: id, predicate: pred, limit: 0, sortDescriptors: .none) {
+    
+    let query = HKSampleQuery(sampleType: id as! HKSampleType, predicate: pred, limit: 0, sortDescriptors: .none) {
          (sampleQuery, results, error) -> Void in
          if let result = results {
             var items:[String] = []
+           
             for item in result {
-              if let sample = item as? HKQuantitySample {
+              if let sample = item as? HKCategorySample {
+                let uuid = sample.uuid
+                let source = sample.sourceRevision.productType ?? ""
+                let version = "\(sample.sourceRevision.operatingSystemVersion.majorVersion).\(sample.sourceRevision.operatingSystemVersion.minorVersion)"
+                let sDate = sample.startDate.description.replacingOccurrences(of: " +0000", with: "")
+                let eDate = sample.endDate.description.replacingOccurrences(of: " +0000", with: "")
                 
+                var str = "{'value': \(sample.value), 'uuid': '\(uuid)', 'source': '\(source)', 'version': '\(version)', 'start_time':'\(sDate)', 'end_time':'\(eDate)'}"
+                
+                str = str.replacingOccurrences(of: "\"", with: "")
+                items.append(str)
+                
+              }
+              
+              if let sample = item as? HKQuantitySample {
                 let val = sample.quantity.description.components(separatedBy: " ")
                 let value = val[0]
                 let unit = val[1]
@@ -91,14 +106,14 @@ class DataSend{
               }
           }
           
-          self.json[ self.targets[count].rawValue ] = items
+          self.json[ self.targets[count] ] = items
           self.runquery(count: count + 1, date:date, identity: identity)
         }//end if
         
      }
      
     DataSend.self.healthStore.execute(query)
-    
+  
    }//end run query
    
   
@@ -132,33 +147,35 @@ class DataSend{
     semaphore.wait()
   }//end end post
   
-  private func sendHybrid(body:String){
-    //print("Sending Post")
-    let semaphore = DispatchSemaphore (value: 0)
-
-    let parameters = "\(body)"
-    let postData = parameters.data(using: .utf8)
-
-    var request = URLRequest(url: URL(string: "https://htnzoeguwg.execute-api.us-east-1.amazonaws.com/dev/write")!,timeoutInterval: Double.infinity)
-    request.addValue("text/plain", forHTTPHeaderField: "Content-Type")
-
-    request.httpMethod = "POST"
-    request.httpBody = postData
-
-    let task = URLSession.shared.dataTask(with: request) { data, response, error in
-      guard let data = data else {
-        print(String(describing: error))
-        return
-      }
-      //print("Sent - Hybrid: \(String(data: data, encoding: .utf8)!)")
-      semaphore.signal()
   
-    }
-
-    task.resume()
-    semaphore.wait()
-  }//end end post
-  
+//  JUST NOT USED CODE -
+//  private func sendHybrid(body:String){
+//    //print("Sending Post")
+//    let semaphore = DispatchSemaphore (value: 0)
+//
+//    let parameters = "\(body)"
+//    let postData = parameters.data(using: .utf8)
+//
+//    var request = URLRequest(url: URL(string: "https://htnzoeguwg.execute-api.us-east-1.amazonaws.com/dev/write")!,timeoutInterval: Double.infinity)
+//    request.addValue("text/plain", forHTTPHeaderField: "Content-Type")
+//
+//    request.httpMethod = "POST"
+//    request.httpBody = postData
+//
+//    let task = URLSession.shared.dataTask(with: request) { data, response, error in
+//      guard let data = data else {
+//        print(String(describing: error))
+//        return
+//      }
+//      //print("Sent - Hybrid: \(String(data: data, encoding: .utf8)!)")
+//      semaphore.signal()
+//
+//    }
+//
+//    task.resume()
+//    semaphore.wait()
+//  }//end end post
+//
   
   
   
