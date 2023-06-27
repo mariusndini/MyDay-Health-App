@@ -76,6 +76,9 @@ Snowpipe is used to ingest data once it reaches the S3 environment in AWS. Usual
 ### Snowflake
 The data is saved in its original JSON format in Snowflake and through SQL is provided structure to data consumption tools. 
 
+### Snowflake Native App
+A snowflake Native App is provided with this codebase.
+
 
 ## Data Consumption
 Once data is in Snowflake it can be consumed with any of the native connectors that Snowflake offers. 

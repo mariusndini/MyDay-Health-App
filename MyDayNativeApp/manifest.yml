@@ -1,0 +1,16 @@
+#version identifier
+version:
+  name: MyDayApp
+  label: "Snowhealth My Day Native App"
+  comment: "Added views to application (carbs, pop_agg views)"
+
+artifacts:
+  setup_script: setup_script.sql
+  readme: README.md
+  extension_code: true
+
+#runtime configuration for this version
+configuration:
+  log_level: debug
+  trace_level: ALWAYS
+  default_streamlit: CORE.STREAMLIT
