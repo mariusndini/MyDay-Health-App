@@ -57,10 +57,9 @@ class HealthKitSetupAssistant {
             let sleep = HKObjectType.categoryType(forIdentifier: HKCategoryTypeIdentifier.sleepAnalysis),
             let o2sat = HKObjectType.quantityType(forIdentifier: .oxygenSaturation)
               
+
               
-
-
-      
+              
               
       else {
         completion(false, HealthkitSetupError.dataTypeNotAvailable)
@@ -79,7 +78,11 @@ class HealthKitSetupAssistant {
                                                    basalenergyburned, waistCircumference,
                                                    activeEnergy, heartRate, appleStandTime,
                                                    restingHeartRate, walkingHeartRateAverage,
-                                                   appleExerciseTime, sleep, o2sat ]
+                                                   appleExerciseTime, sleep, o2sat,
+                                                   HKObjectType.workoutType(),
+                                                   HKSeriesType.activitySummaryType(),
+                                                   HKObjectType.quantityType(forIdentifier: .activeEnergyBurned)!
+                                                  ]
     
     //4. Request Authorization
     HKHealthStore().requestAuthorization(toShare: .none, read: healthKitTypesToRead) { (success, error) in
@@ -87,4 +90,3 @@ class HealthKitSetupAssistant {
     }
   }
 }
-  

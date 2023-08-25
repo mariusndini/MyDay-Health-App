@@ -8,7 +8,6 @@ import pandas as pd
 session = get_active_session()  
 st.set_page_config(layout="centered")
 
-# st.set_page_config(page_title="Myday Health", page_icon="📈")
 
 # ASK CHAT GPT A QUESTION
 def ask_chatGPT(prompt):
@@ -26,7 +25,7 @@ def main_page():
     start_date =st.sidebar.date_input(key="start_date", label="Start Date", value=datetime.today() - timedelta(days=7))
     end_date = st.sidebar.date_input(key="end_date", label="End Date", value=datetime.today())
 
-    st.header("Key Health Insights and Trends")
+    st.header("Health Sense: Your Trends")
 
     agg = session.sql(f""" SELECT *
                         FROM HK.POP_AGG 
@@ -48,7 +47,7 @@ def main_page():
 
 
 
-    st.header("General Trends & Averages")
+    st.header("Health Pulse: Key Trends and Averages")
     chatPrompt = f'''
         you are a health advisor to a {age} year old {gender}. 
         This {gender} weighs {weight} pounds and has exercised an average of {exercise_mins} mins per day
@@ -143,7 +142,8 @@ def main_page():
     })
 
 
-    MAX_CAL_CALC = max((agg['ACTIVE_ENERGY_BURNED'] + agg['BASAL_ENERGY_BURNED']).max(), agg['DIETARY_ENERGY'].max())/1000
+    MAX_CAL_CALC = max((agg['ACTIVE_ENERGY_BURNED'] + agg['BASAL_ENERGY_BURNED']).max(), (df_macros['Protein'] + df_macros['Carbs'] + df_macros['Fat']).max())/1000
+
 
 
     # Transform the dataframe for chart
@@ -213,7 +213,7 @@ def main_page():
     ) 
 
     cals_plot = alt.layer(cals_chart, cals_text).properties(
-        title='Daily Cals Burned (000\'s)'
+        title='Daily Cals Burned (000s)'
     ).configure_title(
         fontSize=15,
         font='Helvetica',
@@ -283,13 +283,8 @@ def main_page():
     # ---------------------------------------------------------------
     # ---------------------------------------------------------------
 
-    st.header("Heart Rate & Sleep Trends")
-    # st.markdown(f'''Heart health is crucial for overall well-being as the heart is responsible for pumping 
-    #                 oxygenated blood to all organs, supporting their proper function and vitality. Maintaining a healthy 
-    #                 heart reduces the risk of cardiovascular diseases. Prioritizing heart health through regular exercise, 
-    #                 a balanced diet, and stress management positively impacts physical mental well-being and overall quality of life.''')
-
-
+    st.header("Pulse & Slumber: Heart Rate & Sleep Health")
+ 
     #HEART RATE KPIs
     heart_query = session.sql(f""" SELECT avg(value)::INT as HR
                         FROM hk.heartrate 

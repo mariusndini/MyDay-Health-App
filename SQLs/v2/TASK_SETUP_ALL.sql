@@ -218,7 +218,7 @@ PARSE_JSON(value):source::string as DEVICE
 
 
 --------------------------------------------------------------------------------------------
-create or replace task SNOWHEALTH.HK.CREATE_ACTIVE_ENERGY_BURNED
+create or replace task SNOWHEALTH.HK.CREATE_BODY_MASS
 	warehouse=SNOWHEALTH_ETL
     AFTER snowhealth.HK.HEALTH_TABLES_PROCESS as
 create or replace TABLE HK.BODYMASS(
@@ -238,7 +238,7 @@ convert_timezone('UTC', 'America/New_York', PARSE_JSON(value):start_time::timest
 convert_timezone('UTC', 'America/New_York', PARSE_JSON(value):end_time::timestamp) as endtime,
 PARSE_JSON(value):value::double as VALUE,
 PARSE_JSON(value):unit::string as UNIT,
-PARSE_JSON(value):uuid::string as UUID,
+NULL as UUID,
 NULL AS APP,
 PARSE_JSON(value):source::string as DEVICE
 

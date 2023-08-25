@@ -144,7 +144,6 @@ class SnowhealthViewController: UIViewController {
      
   }//end send btn
   
-
 }//end view controller
 
 //Iterate thru dates
